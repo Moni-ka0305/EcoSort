@@ -688,7 +688,6 @@ with col_right:
                         </div>
                         """, unsafe_allow_html=True)
                         st.balloons()
-                        st.session_state.show_balloons = False
                         st.rerun()
                     
                     # All predictions
