@@ -688,7 +688,7 @@ with col_right:
                         </div>
                         """, unsafe_allow_html=True)
                         st.balloons()
-                        st.rerun()
+                        st.session_state.show_balloons = False
                     
                     # All predictions
                     with st.expander("📊 All Predictions"):
