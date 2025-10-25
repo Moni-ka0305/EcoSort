@@ -689,6 +689,7 @@ with col_right:
                         """, unsafe_allow_html=True)
                         st.balloons()
                         st.session_state.show_balloons = False
+                        st.rerun()
                     
                     # All predictions
                     with st.expander("📊 All Predictions"):
