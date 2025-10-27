@@ -473,7 +473,7 @@ def load_model():
     try:
         model_name = "yangy50/garbage-classification"
         model = AutoModelForImageClassification.from_pretrained(model_name)
-        processor = AutoFeatureExtractor.from_pretrained(model_name)
+        processor = AutoImageProcessor.from_pretrained(model_name)
         return model, processor
     except Exception as e:
         st.error(f"Model loading error: {e}")
