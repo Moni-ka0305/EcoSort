@@ -1,5 +1,5 @@
 import streamlit as st
-from transformers import AutoFeatureExtractor, AutoModelForImageClassification
+from transformers import AutoImageProcessor, AutoModelForImageClassification
 from PIL import Image
 import torch
 import torch.nn.functional as F
