@@ -664,7 +664,7 @@ with col_left:
 with col_right:
     st.markdown('<div class="section-title">🔍 Classification Results</div>', unsafe_allow_html=True)
     
-    if st.session_state.uploaded_file:
+    if 'uploaded_file' in st.session_state and st.session_state.uploaded_file is not None:
         with st.spinner("🔍 Analyzing with smart AI..."):
             model, processor = load_model()
             
