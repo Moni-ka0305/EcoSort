@@ -621,21 +621,20 @@ with st.sidebar:
     
     # Achievement badges
     # New Enhanced Leaderboard
-st.markdown("### 🏆 Live Leaderboard")
-leaderboard = [
-    {"name": "Eco Warrior", "score": 250},
-    {"name": "Green Champion", "score": 180},
-    {"name": "⭐ YOU", "score": st.session_state.eco_score},
-    {"name": "Recycle Master", "score": 120},
-    {"name": "Planet Saver", "score": 90}
-]
-for i, user in enumerate(leaderboard, 1):
-    emoji = "👑" if i == 1 else "⭐" if i <= 3 else "🔸"
-    st.markdown(f"{emoji} **{user['name']}:** {user['score']} pts")
-
-# Achievements
-if st.session_state.achievements:
-    st.markdown("### 🏅 Your Achievements")
+    st.markdown("### 🏆 Live Leaderboard")
+    leaderboard = [
+        {"name": "Eco Warrior", "score": 250},
+        {"name": "Green Champion", "score": 180},
+        {"name": "⭐ YOU", "score": st.session_state.eco_score},
+        {"name": "Recycle Master", "score": 120},
+        {"name": "Planet Saver", "score": 90}
+        ]
+    for i, user in enumerate(leaderboard, 1):
+        emoji = "👑" if i == 1 else "⭐" if i <= 3 else "🔸"
+        st.markdown(f"{emoji} **{user['name']}:** {user['score']} pts")
+    # Achievements
+    if st.session_state.achievements:
+        st.markdown("### 🏅 Your Achievements")
     for achievement in st.session_state.achievements:
         st.markdown(f"<div class='badge'>{achievement}</div>", unsafe_allow_html=True)
     
@@ -645,7 +644,7 @@ if st.session_state.achievements:
         st.session_state.energy_saved = 0
         st.session_state.co2_prevented = 0
         st.rerun()
-
+        
 # Main content
 col_left, col_right = st.columns([1, 1], gap="large")
 
