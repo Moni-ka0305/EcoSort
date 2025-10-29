@@ -4,6 +4,8 @@ from PIL import Image
 import torch
 import torch.nn.functional as F
 import random
+from gtts import gTTS
+import io
 
 # Page config
 st.set_page_config(
@@ -443,7 +445,20 @@ if 'achievements' not in st.session_state:
     st.session_state.achievements = []
 if 'uploaded_file' not in st.session_state:
     st.session_state.uploaded_file = None
-    
+
+# === ADD VOICE FUNCTION HERE ===
+def text_to_speech(text):
+    """Convert text to speech using Google TTS"""
+    try:
+        tts = gTTS(text=text, lang='en', slow=False)
+        audio_bytes = io.BytesIO()
+        tts.write_to_fp(audio_bytes)
+        audio_bytes.seek(0)
+        return audio_bytes
+    except Exception as e:
+        st.error(f"Voice feature unavailable: {e}")
+        return None
+
 # Eco-facts database
 ECO_FACTS = {
     "cardboard": [
@@ -728,6 +743,31 @@ with col_right:
                     </div>
                     """, unsafe_allow_html=True)
                     
+                    # === ADD VOICE ASSISTANCE FEATURE HERE ===
+                    st.markdown("---")
+                    st.markdown("#### 🎧 Audio Recycling Guide")
+                    
+                    # Create natural language instruction
+                    voice_text = f"This item is {category}. {guide.replace('→', 'goes in the').replace('📦', '').replace('🗑️', '').replace('📄', '').replace('♻️', '')}"
+                    if st.button("🔊 Listen to Recycling Instructions", use_container_width=True, type="secondary"):
+                        # Generate and play audio
+                        audio_bytes = text_to_speech(voice_text)
+                        if audio_bytes:
+                            st.audio(audio_bytes, format='audio/mp3')
+                        # Visual feedback
+                        st.markdown(f"""
+                        <div style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
+                                    padding: 1.5rem; border-radius: 15px; text-align: center; 
+                                    margin: 1rem 0; color: white; border: 2px solid #60a5fa;">
+                            <h4 style="margin: 0 0 1rem 0;">🔊 Voice Assistant Active</h4>
+                            <p style="margin: 0; font-size: 1.1rem;"><strong>"{voice_text}"</strong></p>
+                            <div style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 10px; margin-top: 1rem;">
+                                🎵 Sound On | Click Play Above
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    # === CONTINUE WITH YOUR EXISTING RECYCLE BUTTON ===
+
                     # Action button - ENHANCED
                     if st.button("🎯 RECYCLE & EARN 15 POINTS", use_container_width=True, type="primary"):
                         st.session_state.eco_score += 15
