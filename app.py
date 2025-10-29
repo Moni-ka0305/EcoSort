@@ -743,7 +743,7 @@ with col_right:
                             <p>You saved {eco_data['energy']} kWh of energy!</p>
                         </div>
                         """, unsafe_allow_html=True)
-                        
+                        st.session_state.uploaded_file = None
                         st.rerun()
                     
                     # All predictions
