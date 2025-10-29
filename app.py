@@ -720,7 +720,7 @@ with col_right:
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    # New Action button
+                    # Action button - ENHANCED
                     if st.button("🎯 RECYCLE & EARN 15 POINTS", use_container_width=True, type="primary"):
                         st.session_state.eco_score += 15
                         st.session_state.total_items += 1
@@ -737,7 +737,6 @@ with col_right:
                         
                         st.balloons()
                         st.snow()
-                        
                         st.markdown(f"""
                         <div style="background: linear-gradient(135deg, #00ff88, #00ccff); 
                                     padding: 2rem; border-radius: 20px; text-align: center; 
@@ -747,9 +746,10 @@ with col_right:
                             <p>You saved {eco_data['energy']} kWh of energy!</p>
                         </div>
                         """, unsafe_allow_html=True)
+                        # Clear the uploaded file
                         st.session_state.uploaded_file = None
                         st.rerun()
-                    
+                        
                     # All predictions
                     with st.expander("📊 All Predictions"):
                         sorted_preds = sorted(all_preds.items(), key=lambda x: x[1], reverse=True)
