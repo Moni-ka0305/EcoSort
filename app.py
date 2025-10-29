@@ -651,10 +651,12 @@ col_left, col_right = st.columns([1, 1], gap="large")
 
 with col_left:
     st.markdown('<div class="section-title">📸 Upload Waste Image</div>', unsafe_allow_html=True)
-    uploaded = st.file_uploader("Drop your image here or click to browse", type=["jpg", "jpeg", "png"])
     
-    if uploaded:
-        img = Image.open(uploaded).convert('RGB')
+    # Use session state to track uploaded file
+    uploaded = st.file_uploader("Drop your image here or click to browse", type=["jpg", "jpeg", "png"], key="uploaded_file")
+    
+    if st.session_state.uploaded_file:
+        img = Image.open(st.session_state.uploaded_file).convert('RGB')
         st.image(img, use_column_width=True)
 
 with col_right:
