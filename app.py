@@ -420,7 +420,17 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize session state
+#New # WINNING BANNER - Add after CSS, before session state
+st.markdown("""
+<div style="background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            padding: 1rem; border-radius: 10px; text-align: center; 
+            margin-bottom: 2rem; color: white; border: 3px solid gold;">
+    <h3>CODE4EARTH</h3>
+    <p>AI-Powered Waste Classification + Behavioral Gamification</p>
+</div>
+""", unsafe_allow_html=True)
+
+# New # Initialize session state
 if 'eco_score' not in st.session_state:
     st.session_state.eco_score = 0
 if 'total_items' not in st.session_state:
@@ -429,6 +439,8 @@ if 'energy_saved' not in st.session_state:
     st.session_state.energy_saved = 0
 if 'co2_prevented' not in st.session_state:
     st.session_state.co2_prevented = 0
+if 'achievements' not in st.session_state:
+    st.session_state.achievements = []
 
 # Eco-facts database
 ECO_FACTS = {
@@ -606,17 +618,28 @@ with st.sidebar:
     st.markdown("---")
     
     # Achievement badges
-    achievements = []
-    if st.session_state.total_items >= 10:
-        achievements.append("🏆 Beginner")
-    if st.session_state.total_items >= 25:
-        achievements.append("⭐ Intermediate")
-    if st.session_state.total_items >= 50:
-        achievements.append("💎 Expert")
+    # New Enhanced Leaderboard
+st.markdown("### 🏆 Live Leaderboard")
+leaderboard = [
+    {"name": "Eco Warrior", "score": 250},
+    {"name": "Green Champion", "score": 180},
+    {"name": "⭐ YOU", "score": st.session_state.eco_score},
+    {"name": "Recycle Master", "score": 120},
+    {"name": "Planet Saver", "score": 90}
+]
+for i, user in enumerate(leaderboard, 1):
+    emoji = "👑" if i == 1 else "⭐" if i <= 3 else "🔸"
+    st.markdown(f"{emoji} **{user['name']}:** {user['score']} pts")
+
+# Achievements
+if st.session_state.achievements:
+    st.markdown("### 🏅 Your Achievements")
+    for achievement in st.session_state.achievements:
+        st.markdown(f"<div class='badge'>{achievement}</div>", unsafe_allow_html=True)
     
-    if achievements:
+    if achievement:
         st.markdown("### 🏅 Achievements")
-        for badge in achievements:
+        for badge in achievement:
             st.markdown(f"<div class='badge'>{badge}</div>", unsafe_allow_html=True)
         st.markdown("")
     
@@ -656,7 +679,28 @@ with col_right:
                         <p class="confidence">Confidence: {conf*100:.1f}%</p>
                     </div>
                     """, unsafe_allow_html=True)
+                    #New impact metrics
+                    impact_data = {
+                        "plastic": {"energy": 35, "co2": 4.8, "water": 5, "trees": 0.1},
+                        "metal": {"energy": 45, "co2": 6.5, "water": 8, "trees": 0.2},
+                        "paper": {"energy": 20, "co2": 2.8, "water": 12, "trees": 0.3},
+                        "glass": {"energy": 30, "co2": 4.2, "water": 3, "trees": 0.05},
+                        "cardboard": {"energy": 24, "co2": 3.3, "water": 10, "trees": 0.25},
+                        "trash": {"energy": 2, "co2": 0.3, "water": 1, "trees": 0.01}
+                        }
                     
+                    data = impact_data.get(category, impact_data["trash"])
+                    st.markdown("#### 🌟 Environmental Impact")
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("⚡ Energy", f"{data['energy']} kWh")
+                    with col2:
+                        st.metric("🌫️ CO₂", f"{data['co2']} kg")
+                    with col3:
+                        st.metric("💧 Water", f"{data['water']}L")
+                    with col4:
+                        st.metric("🌳 Trees", f"{data['trees']}")
+                        
                     st.progress(conf)
                     
                     # Guide
@@ -676,18 +720,34 @@ with col_right:
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    # Action button
-                    if st.button("✅ Mark as Recycled", use_container_width=True):
-                        st.session_state.eco_score += 10
+                    # New Action button
+                    if st.button("🎯 RECYCLE & EARN 15 POINTS", use_container_width=True, type="primary"):
+                        st.session_state.eco_score += 15
                         st.session_state.total_items += 1
                         st.session_state.energy_saved += eco_data['energy']
                         st.session_state.co2_prevented += eco_data['co2']
+                        
+                        # Achievements
+                        if st.session_state.total_items == 1:
+                            st.session_state.achievements.append("🌱 First Step")
+                        if st.session_state.total_items == 5:
+                            st.session_state.achievements.append("🔥 Recycling Streak")
+                        if st.session_state.energy_saved > 100:
+                            st.session_state.achievements.append("⚡ Energy Hero")
+                        
+                        st.balloons()
+                        st.snow()
+                        
                         st.markdown(f"""
-                        <div class="alert-success">
-                            ✅ Great job! You earned 10 eco points. Keep going!
+                        <div style="background: linear-gradient(135deg, #00ff88, #00ccff); 
+                                    padding: 2rem; border-radius: 20px; text-align: center; 
+                                    margin: 1rem 0; color: white; font-weight: bold;">
+                            <h2>🎉 ECO HERO!</h2>
+                            <p>+15 Points | Total: {st.session_state.eco_score}</p>
+                            <p>You saved {eco_data['energy']} kWh of energy!</p>
                         </div>
                         """, unsafe_allow_html=True)
-                        st.balloons()
+                        
                         st.rerun()
                     
                     # All predictions
@@ -713,6 +773,26 @@ with col_right:
             </p>
         </div>
         """, unsafe_allow_html=True)
+
+# New #COLLECTIVE IMPACT DASHBOARD
+st.markdown("---")
+st.markdown("### 🌍 Your Collective Impact")
+
+total_impact = {
+    "trees_saved": st.session_state.total_items * 0.15,
+    "water_saved": st.session_state.total_items * 8,
+    "marine_life": st.session_state.total_items * 0.3
+}
+
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.metric("🌳 Trees Saved", f"{total_impact['trees_saved']:.1f}")
+with col2:
+    st.metric("💧 Water Saved", f"{total_impact['water_saved']:.0f}L")  
+with col3:
+    st.metric("🐠 Marine Life", f"{total_impact['marine_life']:.1f} saved")
+
+st.markdown("---")
 
 # Footer with Enhanced Design
 st.markdown("---")
