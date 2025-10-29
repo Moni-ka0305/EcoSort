@@ -743,30 +743,43 @@ with col_right:
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    # === ADD VOICE ASSISTANCE FEATURE HERE ===
+                    # === BETTER USER EXPERIENCE VERSION ===
                     st.markdown("---")
                     st.markdown("#### 🎧 Audio Recycling Guide")
-                    
-                    # Create natural language instruction
                     voice_text = f"This item is {category}. {guide.replace('→', 'goes in the').replace('📦', '').replace('🗑️', '').replace('📄', '').replace('♻️', '')}"
-                    if st.button("🔊 Listen to Recycling Instructions", use_container_width=True, type="secondary"):
-                        # Generate and play audio
-                        audio_bytes = text_to_speech(voice_text)
+                    if TTS_AVAILABLE:
+                        # Generate audio immediately
+                        with st.spinner("🔊 Preparing audio instructions..."):
+                            audio_bytes = text_to_speech(voice_text)
                         if audio_bytes:
+                            # Show audio player that starts when user clicks play
                             st.audio(audio_bytes, format='audio/mp3')
-                        # Visual feedback
-                        st.markdown(f"""
-                        <div style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
-                                    padding: 1.5rem; border-radius: 15px; text-align: center; 
-                                    margin: 1rem 0; color: white; border: 2px solid #60a5fa;">
-                            <h4 style="margin: 0 0 1rem 0;">🔊 Voice Assistant Active</h4>
-                            <p style="margin: 0; font-size: 1.1rem;"><strong>"{voice_text}"</strong></p>
-                            <div style="background: rgba(255,255,255,0.2); padding: 0.5rem; border-radius: 10px; margin-top: 1rem;">
-                                🎵 Sound On | Click Play Above
-                            </div>
-                        </div>
+                            st.success("✅ Click play above to hear recycling instructions!")
+                        # Optional: Auto-play attempt (may not work in all browsers)
+                        st.markdown("""
+                        <script>
+                        // Try to autoplay (may be blocked by browser)
+                        setTimeout(() => {
+                            const audio = document.querySelector('audio');
+                            if (audio) {
+                                audio.play().catch(() => {
+                                    // Autoplay blocked - user must click play
+                                });
+                            }
+                        }, 1000);
+                        </script>
                         """, unsafe_allow_html=True)
-                    # === CONTINUE WITH YOUR EXISTING RECYCLE BUTTON ===
+                        else:
+                            st.info("🔊 Audio generation failed")
+                    else:
+                        st.info("🔊 Voice assistance requires gTTS installation")
+                    # Show minimal visual feedback
+                    st.markdown("""
+                    <div style="background: #f0fdf4; padding: 1rem; border-radius: 10px; border-left: 4px solid #10b981; margin: 1rem 0;">
+                        <p style="margin: 0; color: #065f46; font-weight: 600;">🎧 Audio instructions ready!</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                # === CONTINUE WITH YOUR EXISTING RECYCLE BUTTON ===
 
                     # Action button - ENHANCED
                     if st.button("🎯 RECYCLE & EARN 15 POINTS", use_container_width=True, type="primary"):
