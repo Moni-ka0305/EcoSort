@@ -423,16 +423,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-#New # WINNING BANNER - Add after CSS, before session state
-st.markdown("""
-<div style="background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
-            padding: 1rem; border-radius: 10px; text-align: center; 
-            margin-bottom: 2rem; color: white; border: 3px solid gold;">
-    <h3>CODE4EARTH</h3>
-    <p>AI-Powered Waste Classification + Behavioral Gamification</p>
-</div>
-""", unsafe_allow_html=True)
-
 # New # Initialize session state
 if 'eco_score' not in st.session_state:
     st.session_state.eco_score = 0
