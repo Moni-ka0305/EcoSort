@@ -739,7 +739,6 @@ with col_right:
                             st.session_state.achievements.append("⚡ Energy Hero")
                         
                         st.balloons()
-                        st.snow()
                         st.markdown(f"""
                         <div style="background: linear-gradient(135deg, #00ff88, #00ccff); 
                                     padding: 2rem; border-radius: 20px; text-align: center; 
