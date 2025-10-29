@@ -608,7 +608,33 @@ with col_stat4:
     """, unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
-
+# === VOICE WELCOME MESSAGE ===
+if st.session_state.total_items == 0:
+    st.markdown("---")
+    st.markdown("### 🎧 New to EcoSort?")
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        if st.button("🔊 Listen to Welcome Guide", use_container_width=True, type="secondary"):
+            welcome_text = """
+            Welcome to EcoSort! I'm your AI recycling assistant. 
+            Upload photos of waste items and I'll instantly classify them using artificial intelligence.
+            I'll show you exactly how to recycle each item properly, track your environmental impact,
+            and reward you with eco-points and achievements. 
+            Together, we can make our planet cleaner and greener. Let's get started!
+            """
+            welcome_audio = text_to_speech(welcome_text)
+            if welcome_audio:
+                st.audio(welcome_audio, format='audio/mp3')
+                st.success("🎧 Playing welcome guide...")
+    with col2:
+        if st.button("📖 Quick Start", use_container_width=True):
+            st.info("""
+            **Quick Start:**
+            1. Upload a waste item photo
+            2. AI analyzes and classifies it
+            3. Get recycling instructions
+            4. Earn points and badges
+            """)
 # Sidebar
 with st.sidebar:
     st.markdown("### 📋 Quick Guide")
@@ -809,6 +835,15 @@ with col_right:
                                 st.audio(achievement_audio, format='audio/mp3')
                         
                         st.balloons()
+                        celebration_text = f"""
+                        Fantastic! You just recycled a {category} item and earned 15 points!
+                        You've saved {eco_data['energy']} kilowatt-hours of energy.
+                        Your total eco-score is now {st.session_state.eco_score}.
+                        Keep up the great work, eco warrior!
+                        """
+                        celebration_audio = text_to_speech(celebration_text)
+                        if celebration_audio:
+                             st.audio(celebration_audio, format='audio/mp3')
                         st.markdown(f"""
                         <div style="background: linear-gradient(135deg, #00ff88, #00ccff); 
                                     padding: 2rem; border-radius: 20px; text-align: center; 
@@ -864,7 +899,19 @@ with col2:
     st.metric("💧 Water Saved", f"{total_impact['water_saved']:.0f}L")  
 with col3:
     st.metric("🐠 Marine Life", f"{total_impact['marine_life']:.1f} saved")
-
+# === ADD VOICE FOR IMPACT SUMMARY ===
+if st.button("📊 Hear Your Impact Summary", use_container_width=True):
+    impact_text = f"""
+    Amazing work! You've classified {st.session_state.total_items} items. 
+    You've saved enough energy to power a home for {st.session_state.energy_saved / 10:.1f} days,
+    prevented {st.session_state.co2_prevented:.1f} kilograms of CO2 emissions,
+    and saved approximately {total_impact['trees_saved']:.1f} trees.
+    Your efforts are making a real difference for our planet!
+    """
+    impact_audio = text_to_speech(impact_text)
+    if impact_audio:
+        st.audio(impact_audio, format='audio/mp3')
+        st.success("🎧 Playing your environmental impact summary...")
 # Footer with Enhanced Design
 st.markdown("---")
 st.markdown('<p class="section-heading">🌍 Why Recycling Matters</p>', unsafe_allow_html=True)
