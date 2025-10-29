@@ -785,12 +785,28 @@ with col_right:
                                 st.audio(achievement_audio, format='audio/mp3')
                         if st.session_state.total_items == 10:
                             st.session_state.achievements.append("🏆 Beginner")
+                            achievement_voice_text = "Amazing! You've recycled 10 items! You're now a certified Beginner Eco Warrior!"
+                            achievement_audio = text_to_speech(achievement_voice_text)
+                            if achievement_audio:
+                                st.audio(achievement_audio, format='audio/mp3')
                         if st.session_state.total_items == 25:
                             st.session_state.achievements.append("🔥 Recycling Streak")
+                            achievement_voice_text = "Incredible! 25 items recycled! You're on a recycling streak - keep up the fantastic work!"
+                            achievement_audio = text_to_speech(achievement_voice_text)
+                            if achievement_audio:
+                                st.audio(achievement_audio, format='audio/mp3')
                         if st.session_state.total_items == 50:
                             st.session_state.achievements.append("💎 Expert")
+                            achievement_voice_text = "Outstanding! You've reached Expert level with 50 items recycled! Your consistent efforts show true dedication to our planet. You're not just recycling - you're leading the change!"
+                            achievement_audio = text_to_speech(achievement_voice_text)
+                            if achievement_audio:
+                                st.audio(achievement_audio, format='audio/mp3')
                         if st.session_state.total_items == 100:
                             st.session_state.achievements.append("⚡ Energy Hero")
+                            achievement_voice_text = "Phenomenal! You've achieved Energy Hero status with 100 items recycled! You've saved enough energy to power entire communities! You're a real-life superhero for our planet!"
+                            achievement_audio = text_to_speech(achievement_voice_text)
+                            if achievement_audio:
+                                st.audio(achievement_audio, format='audio/mp3')
                         
                         st.balloons()
                         st.markdown(f"""
