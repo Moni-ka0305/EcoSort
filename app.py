@@ -759,7 +759,8 @@ with col_right:
                         """, unsafe_allow_html=True)
                         # Clear the uploaded file
                         st.session_state.uploaded_file = None
-                        st.rerun()
+                        if st.button("🔄 Continue with New Item", use_container_width=True):
+                            st.rerun()
                         
                     # All predictions
                     with st.expander("📊 All Predictions"):
