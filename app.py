@@ -779,6 +779,10 @@ with col_right:
                         # Achievements
                         if st.session_state.total_items == 1:
                             st.session_state.achievements.append("🌱 First Step")
+                            achievement_voice_text = "Congratulations! You've taken your first step toward a greener planet! Welcome to the recycling community!"
+                            achievement_audio = text_to_speech(achievement_voice_text)
+                            if achievement_audio:
+                                st.audio(achievement_audio, format='audio/mp3')
                         if st.session_state.total_items == 10:
                             st.session_state.achievements.append("🏆 Beginner")
                         if st.session_state.total_items == 25:
