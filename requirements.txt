@@ -2,3 +2,4 @@ streamlit==1.39.0
 transformers==4.46.3
 torch==2.5.1
 pillow==10.4.0
+gtts
