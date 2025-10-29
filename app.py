@@ -441,7 +441,9 @@ if 'co2_prevented' not in st.session_state:
     st.session_state.co2_prevented = 0
 if 'achievements' not in st.session_state:
     st.session_state.achievements = []
-
+if 'uploaded_file' not in st.session_state:
+    st.session_state.uploaded_file = None
+    
 # Eco-facts database
 ECO_FACTS = {
     "cardboard": [
