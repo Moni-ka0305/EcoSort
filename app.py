@@ -643,6 +643,7 @@ with st.sidebar:
         st.session_state.total_items = 0
         st.session_state.energy_saved = 0
         st.session_state.co2_prevented = 0
+        st.session_state.achievements = []
         st.rerun()
         
 # Main content
