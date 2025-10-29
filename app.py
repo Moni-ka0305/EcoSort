@@ -744,37 +744,24 @@ with col_right:
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    # === BETTER USER EXPERIENCE VERSION ===
+                    # === SIMPLE VOICE FEATURE ===
                     st.markdown("---")
                     st.markdown("#### 🎧 Audio Recycling Guide")
+
                     voice_text = f"This item is {category}. {guide.replace('→', 'goes in the').replace('📦', '').replace('🗑️', '').replace('📄', '').replace('♻️', '')}"
-                    if TTS_AVAILABLE:
-                        # Generate audio immediately
-                        with st.spinner("🔊 Preparing audio instructions..."):
-                            audio_bytes = text_to_speech(voice_text)
-                        if audio_bytes:
-                            # Show audio player that starts when user clicks play
-                            st.audio(audio_bytes, format='audio/mp3')
-                            st.success("✅ Click play above to hear recycling instructions!")
-                        # Optional: Auto-play attempt (may not work in all browsers)
-                        st.markdown("""
-                        <script>
-                        // Try to autoplay (may be blocked by browser)
-                        setTimeout(() => {
-                            const audio = document.querySelector('audio');
-                            if (audio) {
-                                audio.play().catch(() => {
-                                    // Autoplay blocked - user must click play
-                                });
-                            }
-                        }, 1000);
-                        </script>
-                        """, unsafe_allow_html=True)
-                        else:
-                            st.info("🔊 Audio generation failed")
+
+                    # Generate audio immediately
+                    with st.spinner("🔊 Preparing audio instructions..."):
+                        audio_bytes = text_to_speech(voice_text)
+
+                    if audio_bytes:
+                        # Show audio player
+                        st.audio(audio_bytes, format='audio/mp3')
+                        st.success("✅ Click play above to hear recycling instructions!")
                     else:
-                        st.info("🔊 Voice assistance requires gTTS installation")
-                    # Show minimal visual feedback
+                        st.info("🔊 Audio generation failed")
+
+                    # Visual feedback
                     st.markdown("""
                     <div style="background: #f0fdf4; padding: 1rem; border-radius: 10px; border-left: 4px solid #10b981; margin: 1rem 0;">
                         <p style="margin: 0; color: #065f46; font-weight: 600;">🎧 Audio instructions ready!</p>
