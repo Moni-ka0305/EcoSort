@@ -620,18 +620,26 @@ with st.sidebar:
     st.markdown("---")
     
     # Achievement badges
-    # New Enhanced Leaderboard
+    # Dynamic Leaderboard - FIXED
     st.markdown("### 🏆 Live Leaderboard")
+    
+    # Create leaderboard with current user score
     leaderboard = [
-        {"name": "Eco Warrior", "score": 250},
-        {"name": "Green Champion", "score": 180},
-        {"name": "⭐ YOU", "score": st.session_state.eco_score},
-        {"name": "Recycle Master", "score": 120},
-        {"name": "Planet Saver", "score": 90}
-        ]
+    {"name": "Eco Warrior", "score": 250},
+    {"name": "Green Champion", "score": 180},
+    {"name": "Recycle Master", "score": 120}, 
+    {"name": "Planet Saver", "score": 90},
+    {"name": "⭐ YOU", "score": st.session_state.eco_score}
+    ]
+    # Sort leaderboard by score (highest first)
+    leaderboard.sort(key=lambda x: x["score"], reverse=True)
+    # Display with proper ranking
     for i, user in enumerate(leaderboard, 1):
         emoji = "👑" if i == 1 else "⭐" if i <= 3 else "🔸"
-        st.markdown(f"{emoji} **{user['name']}:** {user['score']} pts")
+        # Highlight current user
+        display_name = f"**{user['name']}**" if user['name'] == "⭐ YOU" else user['name']
+        st.markdown(f"{emoji} **{display_name}:** {user['score']} pts")    
+    
     # Achievements
     if st.session_state.achievements:
         st.markdown("### 🏅 Your Achievements")
