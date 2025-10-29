@@ -742,9 +742,9 @@ with col_right:
                             st.session_state.achievements.append("🏆 Beginner")
                         if st.session_state.total_items == 25:
                             st.session_state.achievements.append("🔥 Recycling Streak")
-                        if st.session_state.energy_saved == 50:
+                        if st.session_state.total_items == 50:
                             st.session_state.achievements.append("💎 Expert")
-                        if st.session_state.energy_saved == 100:
+                        if st.session_state.total_items == 100:
                             st.session_state.achievements.append("⚡ Energy Hero")
                         
                         st.balloons()
