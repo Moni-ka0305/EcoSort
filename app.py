@@ -637,12 +637,6 @@ if st.session_state.achievements:
     for achievement in st.session_state.achievements:
         st.markdown(f"<div class='badge'>{achievement}</div>", unsafe_allow_html=True)
     
-    if achievement:
-        st.markdown("### 🏅 Achievements")
-        for badge in achievement:
-            st.markdown(f"<div class='badge'>{badge}</div>", unsafe_allow_html=True)
-        st.markdown("")
-    
     if st.button("🔄 Reset Stats", use_container_width=True):
         st.session_state.eco_score = 0
         st.session_state.total_items = 0
