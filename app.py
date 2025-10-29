@@ -729,9 +729,13 @@ with col_right:
                         # Achievements
                         if st.session_state.total_items == 1:
                             st.session_state.achievements.append("🌱 First Step")
-                        if st.session_state.total_items == 5:
+                        if st.session_state.total_items >= 10:
+                            st.session_state.achievements.append("🏆 Beginner")
+                        if st.session_state.total_items >= 25:
                             st.session_state.achievements.append("🔥 Recycling Streak")
-                        if st.session_state.energy_saved > 100:
+                        if st.session_state.energy_saved >= 50:
+                            st.session_state.achievements.append("💎 Expert")
+                        if st.session_state.energy_saved >= 100:
                             st.session_state.achievements.append("⚡ Energy Hero")
                         
                         st.balloons()
