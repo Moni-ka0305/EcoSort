@@ -6,6 +6,7 @@ import torch.nn.functional as F
 import random
 from gtts import gTTS
 import io
+TTS_AVAILABLE = True
 
 # Page config
 st.set_page_config(
