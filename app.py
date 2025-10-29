@@ -790,8 +790,6 @@ with col2:
 with col3:
     st.metric("🐠 Marine Life", f"{total_impact['marine_life']:.1f} saved")
 
-st.markdown("---")
-
 # Footer with Enhanced Design
 st.markdown("---")
 st.markdown('<p class="section-heading">🌍 Why Recycling Matters</p>', unsafe_allow_html=True)
