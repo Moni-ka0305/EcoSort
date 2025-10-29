@@ -727,7 +727,7 @@ with col_right:
                         st.session_state.co2_prevented += eco_data['co2']
                         
                         # Achievements
-                        if st.session_state.total_items == 1:
+                        if st.session_state.total_items >= 1:
                             st.session_state.achievements.append("🌱 First Step")
                         if st.session_state.total_items >= 10:
                             st.session_state.achievements.append("🏆 Beginner")
