@@ -982,6 +982,21 @@ with col2:
     """, unsafe_allow_html=True)
 
 # Final call to action
+st.markdown("""
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            padding: 2.5rem; border-radius: 24px; text-align: center; margin: 2rem 0;
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.4);">
+    <h2 style="color: white; margin: 0 0 1rem 0; font-size: 2rem;">
+        🌟 Start Making a Difference Today!
+    </h2>
+    <p style="color: rgba(255,255,255,0.95); font-size: 1.2rem; margin: 0;">
+        Every item you recycle correctly helps build a sustainable future. 
+        Together, we can make our planet cleaner and greener! 🌱
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+# Final call to action
 # Add this to your existing Streamlit app
 st.markdown("""
 <script>
