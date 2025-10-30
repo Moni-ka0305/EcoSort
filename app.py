@@ -776,10 +776,34 @@ with col_right:
                     # Voice feature
                     st.markdown("---")
                     st.markdown("#### 🎧 Audio Recycling Guide")
-
+                    
                     cleaned_guide = guide.replace('→', '').replace('📦', '').replace('🗑️', '').replace('📄', '').replace('♻️', '').strip()
-                    voice_text = f"This item is {category}... It goes in the {cleaned_guide}... Please ensure it's dry with no grease stains"
-
+                    
+                    # Extract just the bin color/type for cleaner speech
+                    bin_info = cleaned_guide.split(' bin')[0] if ' bin' in cleaned_guide else cleaned_guide
+                    
+                    # Conditional voice instructions for each waste type
+                    if category.lower() == "paper":
+                        voice_text = f"This item is paper... It goes in the {bin_info} bin... Please ensure it's dry with no grease stains"
+                    elif category.lower() == "cardboard":
+                        voice_text = f"This item is cardboard... It goes in the {bin_info} bin... Remember to flatten boxes and remove any tape"
+                    elif category.lower() == "glass":
+                        voice_text = f"This item is glass... It goes in the {bin_info} bin... Please rinse bottles and jars before recycling"
+                    elif category.lower() == "metal":
+                        voice_text = f"This item is metal... It goes in the {bin_info} bin... Rinse cans thoroughly and crush aluminum if possible"
+                    elif category.lower() == "plastic":
+                        voice_text = f"This item is plastic... It goes in the {bin_info} bin... Check the recycling number and rinse thoroughly"
+                    else:  # trash
+                        voice_text = f"This item is non-recyclable trash... It goes in the {bin_info} bin... Consider composting if it's organic waste"
+                    
+                    with st.spinner("🔊 Preparing audio instructions..."):
+                        audio_bytes = text_to_speech(voice_text)
+                    
+                    if audio_bytes:
+                        st.audio(audio_bytes, format='audio/mp3')
+                        st.success("✅ Click play above to hear recycling instructions!")
+                    else:
+                        st.info("🔊 Audio generation failed")
                     with st.spinner("🔊 Preparing audio instructions..."):
                         audio_bytes = text_to_speech(voice_text)
 
@@ -788,7 +812,7 @@ with col_right:
                         st.success("✅ Click play above to hear recycling instructions!")
                     else:
                         st.info("🔊 Audio generation failed")
-
+                        
                     # Action button - FIXED
                     if st.button("🎯 RECYCLE & EARN 15 POINTS", use_container_width=True, type="primary"):
                         # Award points immediately
