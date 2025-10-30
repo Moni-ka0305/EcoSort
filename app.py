@@ -779,8 +779,8 @@ with col_right:
                     
                     cleaned_guide = guide.replace('→', '').replace('📦', '').replace('🗑️', '').replace('📄', '').replace('♻️', '').strip()
                     
-                    # Extract just the bin color/type for cleaner speech
-                    bin_info = cleaned_guide.split(' bin')[0] if ' bin' in cleaned_guide else cleaned_guide
+                    # Extract just the bin name (first word before any instructions)
+                    bin_info = cleaned_guide.split(' ')[0] if ' ' in cleaned_guide else cleaned_guide
                     
                     # Conditional voice instructions for each waste type
                     if category.lower() == "paper":
