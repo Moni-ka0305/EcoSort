@@ -995,3 +995,21 @@ st.markdown("""
     </p>
 </div>
 """, unsafe_allow_html=True)
+
+# === PWA MOBILE APP FEATURES ===
+st.markdown("""
+<script>
+// Progressive Web App Features
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+}
+
+// Add to Home Screen functionality
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log('PWA install prompt available');
+});
+</script>
+""", unsafe_allow_html=True)
