@@ -438,7 +438,11 @@ if 'uploaded_file' not in st.session_state:
     st.session_state.uploaded_file = None
 if 'recycled_this_item' not in st.session_state:
     st.session_state.recycled_this_item = False
-    
+if 'new_achievement_audio' not in st.session_state:
+    st.session_state.new_achievement_audio = None
+if 'new_achievement_name' not in st.session_state:
+    st.session_state.new_achievement_name = None
+
 # === ADD VOICE FUNCTION HERE ===
 def text_to_speech(text):
     """Convert text to speech using Google TTS"""
@@ -686,6 +690,10 @@ with st.sidebar:
         st.session_state.energy_saved = 0
         st.session_state.co2_prevented = 0
         st.session_state.achievements = []
+        st.session_state.uploaded_file = None
+        st.session_state.recycled_this_item = False
+        st.session_state.new_achievement_audio = None
+        st.session_state.new_achievement_name = None
         st.rerun()
         
 # Main content
@@ -788,38 +796,33 @@ with col_right:
                         st.session_state.energy_saved += eco_data['energy']
                         st.session_state.co2_prevented += eco_data['co2']
                         
-                        # Achievements
-                        if st.session_state.total_items == 1:
+                        # Achievements with proper voice playback
+                        new_achievement = None
+                        if st.session_state.total_items == 1 and "🌱 First Step" not in st.session_state.achievements:
                             st.session_state.achievements.append("🌱 First Step")
+                            new_achievement = "🌱 First Step"
                             achievement_voice_text = "Congratulations! You've taken your first step toward a greener planet! Welcome to the recycling community!"
-                            achievement_audio = text_to_speech(achievement_voice_text)
-                            if achievement_audio:
-                                st.audio(achievement_audio, format='audio/mp3')
-                        if st.session_state.total_items == 10:
+                        elif st.session_state.total_items == 10 and "🏆 Beginner" not in st.session_state.achievements:
                             st.session_state.achievements.append("🏆 Beginner")
+                            new_achievement = "🏆 Beginner"
                             achievement_voice_text = "Amazing! You've recycled 10 items! You're now a certified Beginner Eco Warrior!"
-                            achievement_audio = text_to_speech(achievement_voice_text)
-                            if achievement_audio:
-                                st.audio(achievement_audio, format='audio/mp3')
-                        if st.session_state.total_items == 25:
+                        elif st.session_state.total_items == 25 and "🔥 Recycling Streak" not in st.session_state.achievements:
                             st.session_state.achievements.append("🔥 Recycling Streak")
+                            new_achievement = "🔥 Recycling Streak"
                             achievement_voice_text = "Incredible! 25 items recycled! You're on a recycling streak - keep up the fantastic work!"
-                            achievement_audio = text_to_speech(achievement_voice_text)
-                            if achievement_audio:
-                                st.audio(achievement_audio, format='audio/mp3')
-                        if st.session_state.total_items == 50:
+                        elif st.session_state.total_items == 50 and "💎 Expert" not in st.session_state.achievements:
                             st.session_state.achievements.append("💎 Expert")
+                            new_achievement = "💎 Expert"
                             achievement_voice_text = "Outstanding! You've reached Expert level with 50 items recycled! Your consistent efforts show true dedication to our planet. You're not just recycling - you're leading the change!"
-                            achievement_audio = text_to_speech(achievement_voice_text)
-                            if achievement_audio:
-                                st.audio(achievement_audio, format='audio/mp3')
-                        if st.session_state.total_items == 100:
+                        elif st.session_state.total_items == 100 and "⚡ Energy Hero" not in st.session_state.achievements:
                             st.session_state.achievements.append("⚡ Energy Hero")
+                            new_achievement = "⚡ Energy Hero"
                             achievement_voice_text = "Phenomenal! You've achieved Energy Hero status with 100 items recycled! You've saved enough energy to power entire communities! You're a real-life superhero for our planet!"
-                            achievement_audio = text_to_speech(achievement_voice_text)
-                            if achievement_audio:
-                                st.audio(achievement_audio, format='audio/mp3')
                         
+                        # Store achievement audio in session state to play after rerun
+                        if new_achievement:
+                            st.session_state.new_achievement_audio = text_to_speech(achievement_voice_text)
+                            st.session_state.new_achievement_name = new_achievement                        
                         st.balloons()
                         celebration_text = f"""
                         Fantastic! You just recycled a {category} item and earned 15 points!
@@ -843,6 +846,22 @@ with col_right:
                         # MARK AS RECYCLED - don't clear uploaded file yet
                         st.session_state.recycled_this_item = True
                         st.rerun()
+                    
+                    # Play achievement audio if there's a new one
+                    if 'new_achievement_audio' in st.session_state and st.session_state.new_achievement_audio is not None:
+                        st.markdown(f"""
+                        <div style="background: linear-gradient(135deg, #fbbf24, #f59e0b); 
+                                    padding: 1.5rem; border-radius: 16px; text-align: center; 
+                                    margin: 1rem 0; color: white; font-weight: bold;">
+                            <h3>🏆 NEW ACHIEVEMENT UNLOCKED!</h3>
+                            <p>{st.session_state.new_achievement_name}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        st.audio(st.session_state.new_achievement_audio, format='audio/mp3')
+                        st.success(f"🎉 Achievement unlocked: {st.session_state.new_achievement_name}")
+                        # Clear the achievement audio after playing
+                        st.session_state.new_achievement_audio = None
+                        st.session_state.new_achievement_name = None
                     
                     # Show Continue button only after recycling
                     if st.session_state.get('recycled_this_item', False):
