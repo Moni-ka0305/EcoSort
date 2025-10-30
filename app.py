@@ -777,7 +777,7 @@ with col_right:
                     st.markdown("---")
                     st.markdown("#### 🎧 Audio Recycling Guide")
 
-                    voice_text = f"This item is {category}. {guide.replace('→', 'goes in the').replace('📦', '').replace('🗑️', '').replace('📄', '').replace('♻️', '')}"
+                    voice_text = f"This item is {category}. It goes in the {guide.replace('→', '').replace('📦', '').replace('🗑️', '').replace('📄', '').replace('♻️', '').strip()}"
 
                     with st.spinner("🔊 Preparing audio instructions..."):
                         audio_bytes = text_to_speech(voice_text)
