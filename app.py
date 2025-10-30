@@ -711,6 +711,8 @@ with col_right:
             model, processor = load_model()
             
             if model and processor:
+                # Load the image from the uploaded file in session state
+                img = Image.open(st.session_state.uploaded_file).convert('RGB')
                 category, conf, all_preds = classify_waste(img, model, processor)
                 
                 if category:
@@ -721,7 +723,8 @@ with col_right:
                         <p class="confidence">Confidence: {conf*100:.1f}%</p>
                     </div>
                     """, unsafe_allow_html=True)
-                    #New impact metrics
+                    
+                    # Impact metrics
                     impact_data = {
                         "plastic": {"energy": 35, "co2": 4.8, "water": 5, "trees": 0.1},
                         "metal": {"energy": 45, "co2": 6.5, "water": 8, "trees": 0.2},
@@ -729,7 +732,7 @@ with col_right:
                         "glass": {"energy": 30, "co2": 4.2, "water": 3, "trees": 0.05},
                         "cardboard": {"energy": 24, "co2": 3.3, "water": 10, "trees": 0.25},
                         "trash": {"energy": 2, "co2": 0.3, "water": 1, "trees": 0.01}
-                        }
+                    }
                     
                     data = impact_data.get(category, impact_data["trash"])
                     st.markdown("#### 🌟 Environmental Impact")
@@ -762,38 +765,23 @@ with col_right:
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    # === SIMPLE VOICE FEATURE ===
+                    # Voice feature
                     st.markdown("---")
                     st.markdown("#### 🎧 Audio Recycling Guide")
 
                     voice_text = f"This item is {category}. {guide.replace('→', 'goes in the').replace('📦', '').replace('🗑️', '').replace('📄', '').replace('♻️', '')}"
 
-                    # Generate audio immediately
                     with st.spinner("🔊 Preparing audio instructions..."):
                         audio_bytes = text_to_speech(voice_text)
 
                     if audio_bytes:
-                        # Show audio player
                         st.audio(audio_bytes, format='audio/mp3')
                         st.success("✅ Click play above to hear recycling instructions!")
                     else:
                         st.info("🔊 Audio generation failed")
 
-                    # Visual feedback
-                    st.markdown("""
-                    <div style="background: #f0fdf4; padding: 1rem; border-radius: 10px; border-left: 4px solid #10b981; margin: 1rem 0;">
-                        <p style="margin: 0; color: #065f46; font-weight: 600;">🎧 Audio instructions ready!</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                # === CONTINUE WITH YOUR EXISTING RECYCLE BUTTON ===
-
-                    # Action button - ENHANCED
+                    # Action button - FIXED
                     if st.button("🎯 RECYCLE & EARN 15 POINTS", use_container_width=True, type="primary"):
-                        st.session_state.eco_score += 15
-                        st.session_state.total_items += 1
-                        st.session_state.energy_saved += eco_data['energy']
-                        st.session_state.co2_prevented += eco_data['co2']
-                        
                         # Award points immediately
                         st.session_state.eco_score += 15
                         st.session_state.total_items += 1
@@ -855,21 +843,20 @@ with col_right:
                         # MARK AS RECYCLED - don't clear uploaded file yet
                         st.session_state.recycled_this_item = True
                         st.rerun()
-                        
-                        # Show Continue button only after recycling
-                        if st.session_state.get('recycled_this_item', False):
-                            if st.button("🔄 Continue with New Item", use_container_width=True):
-                                # Clear everything for new classification
-                                st.session_state.uploaded_file = None
-                                st.session_state.recycled_this_item = False
-                                st.rerun()
-                        
+                    
+                    # Show Continue button only after recycling
+                    if st.session_state.get('recycled_this_item', False):
+                        if st.button("🔄 Continue with New Item", use_container_width=True):
+                            # Clear everything for new classification
+                            st.session_state.uploaded_file = None
+                            st.session_state.recycled_this_item = False
+                            st.rerun()
+                    
                     # All predictions
                     with st.expander("📊 All Predictions"):
                         sorted_preds = sorted(all_preds.items(), key=lambda x: x[1], reverse=True)
                         for i, (name, score) in enumerate(sorted_preds, 1):
-                            st.write(f"**{i}. {name.title()}**: {score*100:.2f}%")
-    else:
+                            st.write(f"**{i}. {name.title()}**: {score*100:.2f}%")    else:
         st.markdown("""
         <div class="feature">
             <p class="feature-title">👆 Get Started in 3 Easy Steps</p>
