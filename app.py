@@ -436,7 +436,9 @@ if 'achievements' not in st.session_state:
     st.session_state.achievements = []
 if 'uploaded_file' not in st.session_state:
     st.session_state.uploaded_file = None
-
+if 'recycled_this_item' not in st.session_state:
+    st.session_state.recycled_this_item = False
+    
 # === ADD VOICE FUNCTION HERE ===
 def text_to_speech(text):
     """Convert text to speech using Google TTS"""
@@ -792,6 +794,12 @@ with col_right:
                         st.session_state.energy_saved += eco_data['energy']
                         st.session_state.co2_prevented += eco_data['co2']
                         
+                        # Award points immediately
+                        st.session_state.eco_score += 15
+                        st.session_state.total_items += 1
+                        st.session_state.energy_saved += eco_data['energy']
+                        st.session_state.co2_prevented += eco_data['co2']
+                        
                         # Achievements
                         if st.session_state.total_items == 1:
                             st.session_state.achievements.append("🌱 First Step")
@@ -843,10 +851,18 @@ with col_right:
                             <p>You saved {eco_data['energy']} kWh of energy!</p>
                         </div>
                         """, unsafe_allow_html=True)
-                        # Clear the uploaded file
-                        st.session_state.uploaded_file = None
-                        if st.button("🔄 Continue with New Item", use_container_width=True):
-                            st.rerun()
+                        
+                        # MARK AS RECYCLED - don't clear uploaded file yet
+                        st.session_state.recycled_this_item = True
+                        st.rerun()
+                        
+                        # Show Continue button only after recycling
+                        if st.session_state.get('recycled_this_item', False):
+                            if st.button("🔄 Continue with New Item", use_container_width=True):
+                                # Clear everything for new classification
+                                st.session_state.uploaded_file = None
+                                st.session_state.recycled_this_item = False
+                                st.rerun()
                         
                     # All predictions
                     with st.expander("📊 All Predictions"):
