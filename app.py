@@ -804,14 +804,6 @@ with col_right:
                         st.success("✅ Click play above to hear recycling instructions!")
                     else:
                         st.info("🔊 Audio generation failed")
-                    with st.spinner("🔊 Preparing audio instructions..."):
-                        audio_bytes = text_to_speech(voice_text)
-
-                    if audio_bytes:
-                        st.audio(audio_bytes, format='audio/mp3')
-                        st.success("✅ Click play above to hear recycling instructions!")
-                    else:
-                        st.info("🔊 Audio generation failed")
                         
                     # Action button - FIXED
                     if st.button("🎯 RECYCLE & EARN 15 POINTS", use_container_width=True, type="primary"):
