@@ -856,7 +856,8 @@ with col_right:
                     with st.expander("📊 All Predictions"):
                         sorted_preds = sorted(all_preds.items(), key=lambda x: x[1], reverse=True)
                         for i, (name, score) in enumerate(sorted_preds, 1):
-                            st.write(f"**{i}. {name.title()}**: {score*100:.2f}%")    else:
+                            st.write(f"**{i}. {name.title()}**: {score*100:.2f}%")    
+    else:
         st.markdown("""
         <div class="feature">
             <p class="feature-title">👆 Get Started in 3 Easy Steps</p>
