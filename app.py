@@ -423,7 +423,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize session state
+# New # Initialize session state
 if 'eco_score' not in st.session_state:
     st.session_state.eco_score = 0
 if 'total_items' not in st.session_state:
@@ -436,10 +436,6 @@ if 'achievements' not in st.session_state:
     st.session_state.achievements = []
 if 'uploaded_file' not in st.session_state:
     st.session_state.uploaded_file = None
-if 'classification_result' not in st.session_state:
-    st.session_state.classification_result = None
-if 'recycled_this_session' not in st.session_state:
-    st.session_state.recycled_this_session = False
 
 # === ADD VOICE FUNCTION HERE ===
 def text_to_speech(text):
@@ -548,46 +544,6 @@ def classify_waste(image, model, processor):
         st.error(f"Classification error: {e}")
         return None, None, None
 
-# Function to handle recycling and points
-def handle_recycling(category, eco_data):
-    st.session_state.eco_score += 15
-    st.session_state.total_items += 1
-    st.session_state.energy_saved += eco_data['energy']
-    st.session_state.co2_prevented += eco_data['co2']
-    st.session_state.recycled_this_session = True
-    
-    # Achievements
-    if st.session_state.total_items == 1:
-        st.session_state.achievements.append("🌱 First Step")
-        achievement_voice_text = "Congratulations! You've taken your first step toward a greener planet! Welcome to the recycling community!"
-        achievement_audio = text_to_speech(achievement_voice_text)
-        if achievement_audio:
-            st.audio(achievement_audio, format='audio/mp3')
-    if st.session_state.total_items == 10:
-        st.session_state.achievements.append("🏆 Beginner")
-        achievement_voice_text = "Amazing! You've recycled 10 items! You're now a certified Beginner Eco Warrior!"
-        achievement_audio = text_to_speech(achievement_voice_text)
-        if achievement_audio:
-            st.audio(achievement_audio, format='audio/mp3')
-    if st.session_state.total_items == 25:
-        st.session_state.achievements.append("🔥 Recycling Streak")
-        achievement_voice_text = "Incredible! 25 items recycled! You're on a recycling streak - keep up the fantastic work!"
-        achievement_audio = text_to_speech(achievement_voice_text)
-        if achievement_audio:
-            st.audio(achievement_audio, format='audio/mp3')
-    if st.session_state.total_items == 50:
-        st.session_state.achievements.append("💎 Expert")
-        achievement_voice_text = "Outstanding! You've reached Expert level with 50 items recycled! Your consistent efforts show true dedication to our planet. You're not just recycling - you're leading the change!"
-        achievement_audio = text_to_speech(achievement_voice_text)
-        if achievement_audio:
-            st.audio(achievement_audio, format='audio/mp3')
-    if st.session_state.total_items == 100:
-        st.session_state.achievements.append("⚡ Energy Hero")
-        achievement_voice_text = "Phenomenal! You've achieved Energy Hero status with 100 items recycled! You've saved enough energy to power entire communities! You're a real-life superhero for our planet!"
-        achievement_audio = text_to_speech(achievement_voice_text)
-        if achievement_audio:
-            st.audio(achievement_audio, format='audio/mp3')
-
 # Navigation Bar
 st.markdown("""
 <div class="nav-bar">
@@ -642,7 +598,6 @@ with col_stat4:
     """, unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
-
 # === VOICE WELCOME MESSAGE ===
 if st.session_state.total_items == 0:
     st.markdown("---")
@@ -670,7 +625,6 @@ if st.session_state.total_items == 0:
             3. Get recycling instructions
             4. Earn points and badges
             """)
-
 # Sidebar
 with st.sidebar:
     st.markdown("### 📋 Quick Guide")
@@ -697,21 +651,24 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Dynamic Leaderboard
+    # Achievement badges
+    # Dynamic Leaderboard - FIXED
     st.markdown("### 🏆 Live Leaderboard")
     
+    # Create leaderboard with current user score
     leaderboard = [
-        {"name": "Eco Warrior", "score": 250},
-        {"name": "Green Champion", "score": 180},
-        {"name": "Recycle Master", "score": 120}, 
-        {"name": "Planet Saver", "score": 90},
-        {"name": "⭐ YOU", "score": st.session_state.eco_score}
+    {"name": "Eco Warrior", "score": 250},
+    {"name": "Green Champion", "score": 180},
+    {"name": "Recycle Master", "score": 120}, 
+    {"name": "Planet Saver", "score": 90},
+    {"name": "⭐ YOU", "score": st.session_state.eco_score}
     ]
-    
+    # Sort leaderboard by score (highest first)
     leaderboard.sort(key=lambda x: x["score"], reverse=True)
-    
+    # Display with proper ranking
     for i, user in enumerate(leaderboard, 1):
         emoji = "👑" if i == 1 else "⭐" if i <= 3 else "🔸"
+        # Highlight current user
         display_name = f"**{user['name']}**" if user['name'] == "⭐ YOU" else user['name']
         st.markdown(f"{emoji} **{display_name}:** {user['score']} pts")    
     
@@ -727,18 +684,15 @@ with st.sidebar:
         st.session_state.energy_saved = 0
         st.session_state.co2_prevented = 0
         st.session_state.achievements = []
-        st.session_state.uploaded_file = None
-        st.session_state.classification_result = None
-        st.session_state.recycled_this_session = False
         st.rerun()
-
+        
 # Main content
 col_left, col_right = st.columns([1, 1], gap="large")
 
 with col_left:
     st.markdown('<div class="section-title">📸 Upload Waste Image</div>', unsafe_allow_html=True)
     
-    # File uploader
+    # Simple file uploader without key parameter
     uploaded = st.file_uploader("Drop your image here or click to browse", type=["jpg", "jpeg", "png"])
     
     if uploaded:
@@ -750,148 +704,158 @@ with col_left:
 with col_right:
     st.markdown('<div class="section-title">🔍 Classification Results</div>', unsafe_allow_html=True)
     
-    if st.session_state.uploaded_file is not None:
-        # Check if we already have a classification result for this image
-        if st.session_state.classification_result is None or not st.session_state.recycled_this_session:
-            with st.spinner("🔍 Analyzing with smart AI..."):
-                model, processor = load_model()
+    if 'uploaded_file' in st.session_state and st.session_state.uploaded_file is not None:
+        with st.spinner("🔍 Analyzing with smart AI..."):
+            model, processor = load_model()
+            
+            if model and processor:
+                category, conf, all_preds = classify_waste(img, model, processor)
                 
-                if model and processor:
-                    img = Image.open(st.session_state.uploaded_file).convert('RGB')
-                    category, conf, all_preds = classify_waste(img, model, processor)
-                    
-                    if category:
-                        # Store the classification result
-                        st.session_state.classification_result = {
-                            'category': category,
-                            'confidence': conf,
-                            'all_predictions': all_preds
+                if category:
+                    # Result
+                    st.markdown(f"""
+                    <div class="result-box">
+                        <p class="result-category">{category.title()}</p>
+                        <p class="confidence">Confidence: {conf*100:.1f}%</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    #New impact metrics
+                    impact_data = {
+                        "plastic": {"energy": 35, "co2": 4.8, "water": 5, "trees": 0.1},
+                        "metal": {"energy": 45, "co2": 6.5, "water": 8, "trees": 0.2},
+                        "paper": {"energy": 20, "co2": 2.8, "water": 12, "trees": 0.3},
+                        "glass": {"energy": 30, "co2": 4.2, "water": 3, "trees": 0.05},
+                        "cardboard": {"energy": 24, "co2": 3.3, "water": 10, "trees": 0.25},
+                        "trash": {"energy": 2, "co2": 0.3, "water": 1, "trees": 0.01}
                         }
-                        st.session_state.recycled_this_session = False
-        
-        # Display the classification result
-        if st.session_state.classification_result:
-            category = st.session_state.classification_result['category']
-            conf = st.session_state.classification_result['confidence']
-            all_preds = st.session_state.classification_result['all_predictions']
-            
-            # Result
-            st.markdown(f"""
-            <div class="result-box">
-                <p class="result-category">{category.title()}</p>
-                <p class="confidence">Confidence: {conf*100:.1f}%</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Impact metrics
-            impact_data = {
-                "plastic": {"energy": 35, "co2": 4.8, "water": 5, "trees": 0.1},
-                "metal": {"energy": 45, "co2": 6.5, "water": 8, "trees": 0.2},
-                "paper": {"energy": 20, "co2": 2.8, "water": 12, "trees": 0.3},
-                "glass": {"energy": 30, "co2": 4.2, "water": 3, "trees": 0.05},
-                "cardboard": {"energy": 24, "co2": 3.3, "water": 10, "trees": 0.25},
-                "trash": {"energy": 2, "co2": 0.3, "water": 1, "trees": 0.01}
-            }
-            
-            data = impact_data.get(category, impact_data["trash"])
-            st.markdown("#### 🌟 Environmental Impact")
-            col1, col2, col3, col4 = st.columns(4)
-            with col1:
-                st.metric("⚡ Energy", f"{data['energy']} kWh")
-            with col2:
-                st.metric("🌫️ CO₂", f"{data['co2']} kg")
-            with col3:
-                st.metric("💧 Water", f"{data['water']}L")
-            with col4:
-                st.metric("🌳 Trees", f"{data['trees']}")
-                
-            st.progress(conf)
-            
-            # Guide
-            guide = RECYCLING_GUIDE.get(category, RECYCLING_GUIDE["trash"])
-            st.markdown(f"""
-            <div class="info-box">
-                <p class="info-heading">How to Recycle</p>
-                <p class="info-content">{guide}</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # Eco fact
-            eco_data = random.choice(ECO_FACTS.get(category, ECO_FACTS["trash"]))
-            st.markdown(f"""
-            <div class="impact-box">
-                <p class="impact-fact">{eco_data['fact']}</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            # === VOICE FEATURE ===
-            st.markdown("---")
-            st.markdown("#### 🎧 Audio Recycling Guide")
-
-            voice_text = f"This item is {category}. {guide.replace('→', 'goes in the').replace('📦', '').replace('🗑️', '').replace('📄', '').replace('♻️', '')}"
-
-            # Generate audio immediately
-            with st.spinner("🔊 Preparing audio instructions..."):
-                audio_bytes = text_to_speech(voice_text)
-
-            if audio_bytes:
-                # Show audio player
-                st.audio(audio_bytes, format='audio/mp3')
-                st.success("✅ Click play above to hear recycling instructions!")
-            else:
-                st.info("🔊 Audio generation failed")
-
-            # Visual feedback
-            st.markdown("""
-            <div style="background: #f0fdf4; padding: 1rem; border-radius: 10px; border-left: 4px solid #10b981; margin: 1rem 0;">
-                <p style="margin: 0; color: #065f46; font-weight: 600;">🎧 Audio instructions ready!</p>
-            </div>
-            """, unsafe_allow_html=True)
-
-            # Action button - FIXED: This will now properly award points
-            if st.button("🎯 RECYCLE & EARN 15 POINTS", use_container_width=True, type="primary"):
-                handle_recycling(category, eco_data)
-                
-                st.balloons()
-                celebration_text = f"""
-                Fantastic! You just recycled a {category} item and earned 15 points!
-                You've saved {eco_data['energy']} kilowatt-hours of energy.
-                Your total eco-score is now {st.session_state.eco_score}.
-                Keep up the great work, eco warrior!
-                """
-                celebration_audio = text_to_speech(celebration_text)
-                if celebration_audio:
-                    st.audio(celebration_audio, format='audio/mp3')
-                st.markdown(f"""
-                <div style="background: linear-gradient(135deg, #00ff88, #00ccff); 
-                            padding: 2rem; border-radius: 20px; text-align: center; 
-                            margin: 1rem 0; color: white; font-weight: bold;">
-                    <h2>🎉 ECO HERO!</h2>
-                    <p>+15 Points | Total: {st.session_state.eco_score}</p>
-                    <p>You saved {eco_data['energy']} kWh of energy!</p>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                # Clear for next classification but keep the result displayed
-                st.session_state.recycled_this_session = True
-                st.rerun()
-            
-            # All predictions
-            with st.expander("📊 All Predictions"):
-                sorted_preds = sorted(all_preds.items(), key=lambda x: x[1], reverse=True)
-                for i, (name, score) in enumerate(sorted_preds, 1):
-                    st.write(f"**{i}. {name.title()}**: {score*100:.2f}%")
                     
-            # Continue button - only show after recycling
-            if st.session_state.recycled_this_session:
-                if st.button("🔄 Continue with New Item", use_container_width=True):
-                    st.session_state.uploaded_file = None
-                    st.session_state.classification_result = None
-                    st.session_state.recycled_this_session = False
-                    st.rerun()
-        else:
-            st.markdown("""
-            <div class="feature">
+                    data = impact_data.get(category, impact_data["trash"])
+                    st.markdown("#### 🌟 Environmental Impact")
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("⚡ Energy", f"{data['energy']} kWh")
+                    with col2:
+                        st.metric("🌫️ CO₂", f"{data['co2']} kg")
+                    with col3:
+                        st.metric("💧 Water", f"{data['water']}L")
+                    with col4:
+                        st.metric("🌳 Trees", f"{data['trees']}")
+                        
+                    st.progress(conf)
+                    
+                    # Guide
+                    guide = RECYCLING_GUIDE.get(category, RECYCLING_GUIDE["trash"])
+                    st.markdown(f"""
+                    <div class="info-box">
+                        <p class="info-heading">How to Recycle</p>
+                        <p class="info-content">{guide}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Eco fact
+                    eco_data = random.choice(ECO_FACTS.get(category, ECO_FACTS["trash"]))
+                    st.markdown(f"""
+                    <div class="impact-box">
+                        <p class="impact-fact">{eco_data['fact']}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # === SIMPLE VOICE FEATURE ===
+                    st.markdown("---")
+                    st.markdown("#### 🎧 Audio Recycling Guide")
+
+                    voice_text = f"This item is {category}. {guide.replace('→', 'goes in the').replace('📦', '').replace('🗑️', '').replace('📄', '').replace('♻️', '')}"
+
+                    # Generate audio immediately
+                    with st.spinner("🔊 Preparing audio instructions..."):
+                        audio_bytes = text_to_speech(voice_text)
+
+                    if audio_bytes:
+                        # Show audio player
+                        st.audio(audio_bytes, format='audio/mp3')
+                        st.success("✅ Click play above to hear recycling instructions!")
+                    else:
+                        st.info("🔊 Audio generation failed")
+
+                    # Visual feedback
+                    st.markdown("""
+                    <div style="background: #f0fdf4; padding: 1rem; border-radius: 10px; border-left: 4px solid #10b981; margin: 1rem 0;">
+                        <p style="margin: 0; color: #065f46; font-weight: 600;">🎧 Audio instructions ready!</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                # === CONTINUE WITH YOUR EXISTING RECYCLE BUTTON ===
+
+                    # Action button - ENHANCED
+                    if st.button("🎯 RECYCLE & EARN 15 POINTS", use_container_width=True, type="primary"):
+                        st.session_state.eco_score += 15
+                        st.session_state.total_items += 1
+                        st.session_state.energy_saved += eco_data['energy']
+                        st.session_state.co2_prevented += eco_data['co2']
+                        
+                        # Achievements
+                        if st.session_state.total_items == 1:
+                            st.session_state.achievements.append("🌱 First Step")
+                            achievement_voice_text = "Congratulations! You've taken your first step toward a greener planet! Welcome to the recycling community!"
+                            achievement_audio = text_to_speech(achievement_voice_text)
+                            if achievement_audio:
+                                st.audio(achievement_audio, format='audio/mp3')
+                        if st.session_state.total_items == 10:
+                            st.session_state.achievements.append("🏆 Beginner")
+                            achievement_voice_text = "Amazing! You've recycled 10 items! You're now a certified Beginner Eco Warrior!"
+                            achievement_audio = text_to_speech(achievement_voice_text)
+                            if achievement_audio:
+                                st.audio(achievement_audio, format='audio/mp3')
+                        if st.session_state.total_items == 25:
+                            st.session_state.achievements.append("🔥 Recycling Streak")
+                            achievement_voice_text = "Incredible! 25 items recycled! You're on a recycling streak - keep up the fantastic work!"
+                            achievement_audio = text_to_speech(achievement_voice_text)
+                            if achievement_audio:
+                                st.audio(achievement_audio, format='audio/mp3')
+                        if st.session_state.total_items == 50:
+                            st.session_state.achievements.append("💎 Expert")
+                            achievement_voice_text = "Outstanding! You've reached Expert level with 50 items recycled! Your consistent efforts show true dedication to our planet. You're not just recycling - you're leading the change!"
+                            achievement_audio = text_to_speech(achievement_voice_text)
+                            if achievement_audio:
+                                st.audio(achievement_audio, format='audio/mp3')
+                        if st.session_state.total_items == 100:
+                            st.session_state.achievements.append("⚡ Energy Hero")
+                            achievement_voice_text = "Phenomenal! You've achieved Energy Hero status with 100 items recycled! You've saved enough energy to power entire communities! You're a real-life superhero for our planet!"
+                            achievement_audio = text_to_speech(achievement_voice_text)
+                            if achievement_audio:
+                                st.audio(achievement_audio, format='audio/mp3')
+                        
+                        st.balloons()
+                        celebration_text = f"""
+                        Fantastic! You just recycled a {category} item and earned 15 points!
+                        You've saved {eco_data['energy']} kilowatt-hours of energy.
+                        Your total eco-score is now {st.session_state.eco_score}.
+                        Keep up the great work, eco warrior!
+                        """
+                        celebration_audio = text_to_speech(celebration_text)
+                        if celebration_audio:
+                             st.audio(celebration_audio, format='audio/mp3')
+                        st.markdown(f"""
+                        <div style="background: linear-gradient(135deg, #00ff88, #00ccff); 
+                                    padding: 2rem; border-radius: 20px; text-align: center; 
+                                    margin: 1rem 0; color: white; font-weight: bold;">
+                            <h2>🎉 ECO HERO!</h2>
+                            <p>+15 Points | Total: {st.session_state.eco_score}</p>
+                            <p>You saved {eco_data['energy']} kWh of energy!</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        # Clear the uploaded file
+                        st.session_state.uploaded_file = None
+                        if st.button("🔄 Continue with New Item", use_container_width=True):
+                            st.rerun()
+                        
+                    # All predictions
+                    with st.expander("📊 All Predictions"):
+                        sorted_preds = sorted(all_preds.items(), key=lambda x: x[1], reverse=True)
+                        for i, (name, score) in enumerate(sorted_preds, 1):
+                            st.write(f"**{i}. {name.title()}**: {score*100:.2f}%")
+    else:
+        st.markdown("""
+        <div class="feature">
             <p class="feature-title">👆 Get Started in 3 Easy Steps</p>
             <p class="feature-desc">
                 <strong>1. 📸 Upload</strong> - Take or upload a waste item photo<br><br>
@@ -904,11 +868,11 @@ with col_right:
                 ✓ Environmental impact metrics<br>
                 ✓ Eco points & achievement badges<br>
                 ✓ Track your contribution to saving the planet
-                </p>
-            </div>
-            """, unsafe_allow_html=True)
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
-# COLLECTIVE IMPACT DASHBOARD
+# New #COLLECTIVE IMPACT DASHBOARD
 st.markdown("---")
 st.markdown("### 🌍 Your Collective Impact")
 
@@ -925,7 +889,6 @@ with col2:
     st.metric("💧 Water Saved", f"{total_impact['water_saved']:.0f}L")  
 with col3:
     st.metric("🐠 Marine Life", f"{total_impact['marine_life']:.1f} saved")
-
 # === ADD VOICE FOR IMPACT SUMMARY ===
 if st.button("📊 Hear Your Impact Summary", use_container_width=True):
     impact_text = f"""
@@ -939,10 +902,9 @@ if st.button("📊 Hear Your Impact Summary", use_container_width=True):
     if impact_audio:
         st.audio(impact_audio, format='audio/mp3')
         st.success("🎧 Playing your environmental impact summary...")
-
 # Footer with Enhanced Design
 st.markdown("---")
-st.markdown('<p style="font-size: 1.5rem; font-weight: 800; color: #1f2937; margin: 2rem 0 1rem 0;">🌍 Why Recycling Matters</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-heading">🌍 Why Recycling Matters</p>', unsafe_allow_html=True)
 
 col_a, col_b, col_c = st.columns(3)
 
@@ -987,7 +949,7 @@ with col_c:
 
 # Add additional info section
 st.markdown("---")
-st.markdown('<p style="font-size: 1.5rem; font-weight: 800; color: #1f2937; margin: 2rem 0 1rem 0;">📚 Supported Categories</p>', unsafe_allow_html=True)
+st.markdown('<p class="section-heading">📚 Supported Categories</p>', unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
 
