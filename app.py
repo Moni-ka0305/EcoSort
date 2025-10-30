@@ -889,7 +889,147 @@ with col_right:
                     st.session_state.classification_result = None
                     st.session_state.recycled_this_session = False
                     st.rerun()
-    else:
-        st.markdown("""
-        <div class="feature">
-            <p class="feature-title">👆 Get Started in 3 Easy Steps
+        else:
+            st.markdown("""
+            <div class="feature">
+            <p class="feature-title">👆 Get Started in 3 Easy Steps</p>
+            <p class="feature-desc">
+                <strong>1. 📸 Upload</strong> - Take or upload a waste item photo<br><br>
+                <strong>2. 🤖 Analyze</strong> - AI classifies in seconds with smart wrapper detection<br><br>
+                <strong>3. ♻️ Recycle</strong> - Follow disposal instructions<br><br>
+                <br>
+                <strong>What You'll Get:</strong><br>
+                ✓ Smart AI <br>
+                ✓ Detailed recycling instructions<br>
+                ✓ Environmental impact metrics<br>
+                ✓ Eco points & achievement badges<br>
+                ✓ Track your contribution to saving the planet
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+
+# COLLECTIVE IMPACT DASHBOARD
+st.markdown("---")
+st.markdown("### 🌍 Your Collective Impact")
+
+total_impact = {
+    "trees_saved": st.session_state.total_items * 0.15,
+    "water_saved": st.session_state.total_items * 8,
+    "marine_life": st.session_state.total_items * 0.3
+}
+
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.metric("🌳 Trees Saved", f"{total_impact['trees_saved']:.1f}")
+with col2:
+    st.metric("💧 Water Saved", f"{total_impact['water_saved']:.0f}L")  
+with col3:
+    st.metric("🐠 Marine Life", f"{total_impact['marine_life']:.1f} saved")
+
+# === ADD VOICE FOR IMPACT SUMMARY ===
+if st.button("📊 Hear Your Impact Summary", use_container_width=True):
+    impact_text = f"""
+    Amazing work! You've classified {st.session_state.total_items} items. 
+    You've saved enough energy to power a home for {st.session_state.energy_saved / 10:.1f} days,
+    prevented {st.session_state.co2_prevented:.1f} kilograms of CO2 emissions,
+    and saved approximately {total_impact['trees_saved']:.1f} trees.
+    Your efforts are making a real difference for our planet!
+    """
+    impact_audio = text_to_speech(impact_text)
+    if impact_audio:
+        st.audio(impact_audio, format='audio/mp3')
+        st.success("🎧 Playing your environmental impact summary...")
+
+# Footer with Enhanced Design
+st.markdown("---")
+st.markdown('<p style="font-size: 1.5rem; font-weight: 800; color: #1f2937; margin: 2rem 0 1rem 0;">🌍 Why Recycling Matters</p>', unsafe_allow_html=True)
+
+col_a, col_b, col_c = st.columns(3)
+
+with col_a:
+    st.markdown("""
+    <div class="card">
+        <p class="feature-title">🌍 Environmental Impact</p>
+        <p class="feature-desc">
+            • Reduces landfill waste by 50-70%<br>
+            • Prevents toxic soil & water contamination<br>
+            • Protects wildlife & ecosystems<br>
+            • Combats climate change
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col_b:
+    st.markdown("""
+    <div class="card">
+        <p class="feature-title">⚡ Energy Conservation</p>
+        <p class="feature-desc">
+            • Saves up to 95% energy vs new materials<br>
+            • Reduces greenhouse gas emissions<br>
+            • Conserves natural resources<br>
+            • Powers millions of homes
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col_c:
+    st.markdown("""
+    <div class="card">
+        <p class="feature-title">💰 Economic Benefits</p>
+        <p class="feature-desc">
+            • Creates 6x more jobs than landfills<br>
+            • Generates material revenue<br>
+            • Reduces production costs<br>
+            • Builds circular economy
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Add additional info section
+st.markdown("---")
+st.markdown('<p style="font-size: 1.5rem; font-weight: 800; color: #1f2937; margin: 2rem 0 1rem 0;">📚 Supported Categories</p>', unsafe_allow_html=True)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("""
+    <div class="feature">
+        <p class="feature-title">♻️ Recyclable Materials</p>
+        <p class="feature-desc">
+            <strong>Paper & Cardboard:</strong> Newspapers, magazines, boxes<br>
+            <strong>Plastics:</strong> Bottles, containers, wrappers <br>
+            <strong>Glass:</strong> Bottles, jars (all colors)<br>
+            <strong>Metals:</strong> Aluminum cans, steel cans, foil<br>
+            <strong>Mixed Materials:</strong> Smart detection for wrappers
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div class="feature">
+        <p class="feature-title">⚠️ Special Handling</p>
+        <p class="feature-desc">
+            <strong>Food Wrappers:</strong> Metallized plastic → plastic bin<br>
+            <strong>Candy Wrappers:</strong> Check local rules, usually plastic<br>
+            <strong>Organics:</strong> Compost or green waste bins<br>
+            <strong>Hazardous:</strong> Paint, chemicals - special disposal<br>
+            <strong>Mixed Materials:</strong> AI detects and guides properly
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Final call to action
+st.markdown("""
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            padding: 2.5rem; border-radius: 24px; text-align: center; margin: 2rem 0;
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.4);">
+    <h2 style="color: white; margin: 0 0 1rem 0; font-size: 2rem;">
+        🌟 Start Making a Difference Today!
+    </h2>
+    <p style="color: rgba(255,255,255,0.95); font-size: 1.2rem; margin: 0;">
+        Every item you recycle correctly helps build a sustainable future. 
+        Together, we can make our planet cleaner and greener! 🌱
+    </p>
+</div>
+""", unsafe_allow_html=True)
