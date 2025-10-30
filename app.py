@@ -982,34 +982,52 @@ with col2:
     """, unsafe_allow_html=True)
 
 # Final call to action
-st.markdown("""
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            padding: 2.5rem; border-radius: 24px; text-align: center; margin: 2rem 0;
-            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.4);">
-    <h2 style="color: white; margin: 0 0 1rem 0; font-size: 2rem;">
-        🌟 Start Making a Difference Today!
-    </h2>
-    <p style="color: rgba(255,255,255,0.95); font-size: 1.2rem; margin: 0;">
-        Every item you recycle correctly helps build a sustainable future. 
-        Together, we can make our planet cleaner and greener! 🌱
-    </p>
-</div>
-""", unsafe_allow_html=True)
-
-# === PWA MOBILE APP FEATURES ===
+# Add this to your existing Streamlit app
 st.markdown("""
 <script>
-// Progressive Web App Features
+// Enhanced PWA Features - 100% FREE
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js');
+    navigator.serviceWorker.register('/sw.js')
+        .then(() => console.log('PWA Ready!'))
+        .catch(err => console.log('PWA Support:', err));
 }
 
-// Add to Home Screen functionality
-let deferredPrompt;
+// Add to Home Screen Prompt
+let installPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
-    deferredPrompt = e;
-    console.log('PWA install prompt available');
+    installPrompt = e;
+    
+    // Show install button
+    if (document.getElementById('install-btn')) {
+        document.getElementById('install-btn').style.display = 'block';
+    }
 });
+
+function installApp() {
+    if (installPrompt) {
+        installPrompt.prompt();
+        installPrompt.userChoice.then((choice) => {
+            if (choice.outcome === 'accepted') {
+                console.log('User installed the app');
+            }
+            installPrompt = null;
+        });
+    }
+}
 </script>
+
+<!-- Install Button -->
+<div id="install-btn" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+    <button onclick="installApp()" style="
+        background: #10b981;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        cursor: pointer;
+    ">📱 Install App</button>
+</div>
 """, unsafe_allow_html=True)
