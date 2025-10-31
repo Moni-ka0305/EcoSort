@@ -840,7 +840,7 @@ with col_right:
                         if new_achievement:
                             st.session_state.new_achievement_audio = text_to_speech(achievement_voice_text)
                             st.session_state.new_achievement_name = new_achievement   
-                            st.toast(f"🌟 Achievement unlocked! You're officially a {st.session_state.new_achievement_name}!!")
+                            st.toast(f"🌟 Achievement unlocked! You've officially taken {st.session_state.new_achievement_name}!!")
                         st.balloons()
                         celebration_text = f"""
                         Fantastic! You just recycled a {category} item and earned 15 points!
